@@ -86,6 +86,7 @@ pub struct CommonMarkCache {
     #[cfg(feature = "syntax_highlighting")]
     ts: ThemeSet,
     link_hooks: HashMap<String, bool>,
+    checkbox_vec:Vec<bool>,
 }
 
 #[allow(clippy::derivable_impls)]
@@ -98,6 +99,7 @@ impl Default for CommonMarkCache {
             #[cfg(feature = "syntax_highlighting")]
             ts: ThemeSet::load_defaults(),
             link_hooks: HashMap::new(),
+            checkbox_vec:vec![],
         }
     }
 }
@@ -477,30 +479,26 @@ impl CommonMarkViewerInternal {
         if let Some(level) = self.text_style.heading {
             let max_height = ui.text_style_height(&TextStyle::Heading);
             let min_height = ui.text_style_height(&TextStyle::Body);
-            let diff = max_height - min_height;
+            let size = (max_height - min_height)*15.0;
+            //let size=70.0;
             match level {
                 HeadingLevel::H1 => {
-                    text = text.strong().heading();
+                    text = text.strong().size(size);
                 }
                 HeadingLevel::H2 => {
-                    let size = min_height + diff * 0.835;
-                    text = text.strong().size(size);
+                    text = text.strong().size(size*0.72);
                 }
                 HeadingLevel::H3 => {
-                    let size = min_height + diff * 0.668;
-                    text = text.strong().size(size);
+                    text = text.strong().size(size*0.60);
                 }
                 HeadingLevel::H4 => {
-                    let size = min_height + diff * 0.501;
-                    text = text.strong().size(size);
+                    text = text.strong().size(size*0.5);
                 }
                 HeadingLevel::H5 => {
-                    let size = min_height + diff * 0.334;
-                    text = text.size(size);
+                    text = text.size(size*0.33);
                 }
                 HeadingLevel::H6 => {
-                    let size = min_height + diff * 0.167;
-                    text = text.size(size);
+                    text = text.size(size*0.25);
                 }
             }
         }
@@ -560,9 +558,9 @@ impl CommonMarkViewerInternal {
             }
             pulldown_cmark::Event::TaskListMarker(checkbox) => {
                 if checkbox {
-                    checkbox_point(ui, "☑ ")
+                    checkbox_point(ui,&mut true)
                 } else {
-                    checkbox_point(ui, "☐ ")
+                    checkbox_point(ui,&mut false)
                 }
             }
         }
@@ -915,18 +913,8 @@ fn bullet_point_hollow(ui: &mut Ui) {
     );
 }
 
-fn checkbox_point(ui: &mut Ui, ty: &str) {
-    let (rect, _) = ui.allocate_exact_size(
-        egui::vec2(width_body_space(ui) * 5.0, height_body(ui)),
-        Sense::hover(),
-    );
-    ui.painter().text(
-        rect.right_center(),
-        egui::Align2::RIGHT_CENTER,
-        ty,
-        TextStyle::Body.resolve(ui.style()),
-        ui.visuals().text_color(),
-    );
+fn checkbox_point(ui: &mut Ui, status:&mut bool) {
+    ui.add(egui::Checkbox::without_text(status));
 }
 
 fn number_point(ui: &mut Ui, number: &str) {
