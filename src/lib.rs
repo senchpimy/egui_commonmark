@@ -479,7 +479,7 @@ impl CommonMarkViewerInternal {
         if let Some(level) = self.text_style.heading {
             let max_height = ui.text_style_height(&TextStyle::Heading);
             let min_height = ui.text_style_height(&TextStyle::Body);
-            let size = (max_height - min_height)*15.0;
+            let size = (max_height - min_height)*10.0;
             //let size=70.0;
             match level {
                 HeadingLevel::H1 => {
