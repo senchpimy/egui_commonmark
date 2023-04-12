@@ -454,18 +454,20 @@ impl CommonMarkViewerInternal {
     ) {
         if self.is_table {
             newline(ui);
-            egui::Frame::group(ui.style()).show(ui, |ui| {
-                let id = self.source_id.with(self.curr_table);
-                self.curr_table += 1;
-                egui::Grid::new(id).striped(true).show(ui, |ui| {
-                    while self.is_table {
-                        if let Some(e) = events.next() {
-                            self.should_insert_newline = false;
-                            self.event(ui, e, cache, options, max_width);
-                        } else {
-                            break;
+            egui::ScrollArea::horizontal().show(ui, |ui| {
+                egui::Frame::group(ui.style()).show(ui, |ui| {
+                    let id = self.source_id.with(self.curr_table);
+                    self.curr_table += 1;
+                    egui::Grid::new(id).striped(true).show(ui, |ui| {
+                        while self.is_table {
+                            if let Some(e) = events.next() {
+                                self.should_insert_newline = false;
+                                self.event(ui, e, cache, options, max_width);
+                            } else {
+                                break;
+                            }
                         }
-                    }
+                    });
                 });
             });
 
