@@ -1,8 +1,8 @@
 //! Make sure to run this example from the repo directory and not the example
 //! directory. To see all the features in full effect, run this example with
-//! `cargo r --example basic --all-features`
+//! `cargo r --example scroll --all-features`
 //! Add `light` or `dark` to the end of the command to specify theme. Default
-//! is light. `cargo r --example basic --all-features dark`
+//! is light. `cargo r --example scroll --all-features dark`
 
 use eframe::egui;
 use egui_commonmark::*;
@@ -13,36 +13,30 @@ struct App {
 
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        let text = r#"# Commonmark Viewer Example
+        let mut text = r#"# Commonmark Viewer Example
+        This is a fairly large markdown file showcasing scroll.
+                    "#
+        .to_string();
 
-A *bunch* ~~of~~ __different__ `text` styles.
-
-| __A table!__ |
-| -------- |
-| ![Rust logo](examples/rust-logo-128x128.png) |
-| Some filler text |
-| [Link to repo](https://github.com/lampsitter/egui_commonmark) |
+        let repeating = r#"
+This section will be repeated
 
 ```rs
 let mut vec = Vec::new();
 vec.push(5);
 ```
-
-> Some smart quote here
-
-- [ ] A feature[^1]
-- [X] A completed feature
-    1. Sub item
-
-[^1]: A footnote
-            "#;
+ 
+# Plans
+* Make a sandwich
+* Bake a cake
+* Conquer the world
+        "#;
+        text += &repeating.repeat(1024);
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| {
-                CommonMarkViewer::new("viewer")
-                    .max_image_width(Some(512))
-                    .show(ui, &mut self.cache, text);
-            });
+            CommonMarkViewer::new("viewer")
+                .max_image_width(Some(512))
+                .show_scrollable(ui, &mut self.cache, &text);
         });
     }
 }
