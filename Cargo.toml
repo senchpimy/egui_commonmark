@@ -12,7 +12,7 @@ documentation = "https://docs.rs/egui_commonmark"
 include = ["src/*.rs", "LICENSE-MIT", "LICENSE-APACHE", "Cargo.toml"]
 
 [dependencies]
-egui = "0.21"
+egui = "0.22"
 pulldown-cmark = { version = "0.9.2", default-features = false }
 image = { version = "0.24", default-features = false, features = ["png"] }
 

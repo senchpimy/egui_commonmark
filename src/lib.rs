@@ -96,7 +96,6 @@ pub struct CommonMarkCache {
     #[cfg(feature = "syntax_highlighting")]
     ts: ThemeSet,
     link_hooks: HashMap<String, bool>,
-    checkbox_vec:Vec<bool>,
     scroll: HashMap<Id, ScrollableCache>,
 }
 
@@ -110,7 +109,6 @@ impl Default for CommonMarkCache {
             #[cfg(feature = "syntax_highlighting")]
             ts: ThemeSet::load_defaults(),
             link_hooks: HashMap::new(),
-            checkbox_vec:vec![],
             scroll: Default::default(),
         }
     }
