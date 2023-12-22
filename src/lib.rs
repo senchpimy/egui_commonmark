@@ -592,22 +592,22 @@ impl CommonMarkViewerInternal {
     ) {
         if self.is_table {
             newline(ui);
-        egui::ScrollArea::horizontal().show(ui, |ui| {
-            egui::Frame::group(ui.style()).show(ui, |ui| {
-                let id = self.source_id.with(self.curr_table);
-                self.curr_table += 1;
-                egui::Grid::new(id).striped(true).show(ui, |ui| {
-                    while self.is_table {
-                        if let Some((_, e)) = events.next() {
-                            self.should_insert_newline = false;
-                            self.event(ui, e, cache, options, max_width);
-                        } else {
-                            break;
+            egui::ScrollArea::horizontal().show(ui, |ui| {
+                egui::Frame::group(ui.style()).show(ui, |ui| {
+                    let id = self.source_id.with(self.curr_table);
+                    self.curr_table += 1;
+                    egui::Grid::new(id).striped(true).show(ui, |ui| {
+                        while self.is_table {
+                            if let Some((_, e)) = events.next() {
+                                self.should_insert_newline = false;
+                                self.event(ui, e, cache, options, max_width);
+                            } else {
+                                break;
+                            }
                         }
-                    }
+                    });
                 });
             });
-        });
             newline(ui);
         }
     }
@@ -618,26 +618,26 @@ impl CommonMarkViewerInternal {
         if let Some(level) = self.text_style.heading {
             let max_height = ui.text_style_height(&TextStyle::Heading);
             let min_height = ui.text_style_height(&TextStyle::Body);
-            let size = (max_height - min_height)*7.0;
+            let size = (max_height - min_height) * 7.0;
             //let size=70.0;
             match level {
                 HeadingLevel::H1 => {
                     text = text.strong().size(size);
                 }
                 HeadingLevel::H2 => {
-                    text = text.strong().size(size*0.72);
+                    text = text.strong().size(size * 0.72);
                 }
                 HeadingLevel::H3 => {
-                    text = text.strong().size(size*0.60);
+                    text = text.strong().size(size * 0.60);
                 }
                 HeadingLevel::H4 => {
-                    text = text.strong().size(size*0.5);
+                    text = text.strong().size(size * 0.5);
                 }
                 HeadingLevel::H5 => {
-                    text = text.size(size*0.33);
+                    text = text.size(size * 0.33);
                 }
                 HeadingLevel::H6 => {
-                    text = text.size(size*0.25);
+                    text = text.size(size * 0.25);
                 }
             }
         }
@@ -697,9 +697,9 @@ impl CommonMarkViewerInternal {
             }
             pulldown_cmark::Event::TaskListMarker(checkbox) => {
                 if checkbox {
-                    checkbox_point(ui,&mut true)
+                    checkbox_point(ui, &mut true)
                 } else {
-                    checkbox_point(ui,&mut false)
+                    checkbox_point(ui, &mut false)
                 }
             }
         }
@@ -906,7 +906,8 @@ impl CommonMarkViewerInternal {
         if let Some(image) = self.image.take() {
             if let Some(texture) = image.handle {
                 let size = options.image_scaled(&texture);
-                let response = ui.image(&texture, size);
+                //let response = ui.image(&texture, size);
+                let response = ui.add(egui::Image::new(&texture).max_size(size));
 
                 if !image.alt_text.is_empty() && options.show_alt_text_on_hover {
                     response.on_hover_ui_at_pointer(|ui| {
@@ -1052,7 +1053,7 @@ fn bullet_point_hollow(ui: &mut Ui) {
     );
 }
 
-fn checkbox_point(ui: &mut Ui, status:&mut bool) {
+fn checkbox_point(ui: &mut Ui, status: &mut bool) {
     ui.add(egui::Checkbox::without_text(status));
 }
 
